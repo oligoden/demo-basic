@@ -1,0 +1,43 @@
+version: '3.7' 
+
+services:
+  basic:
+    build:
+      context: ./cfg
+    working_dir: /opt/basic
+    volumes: 
+      - "./bin/basic:/opt/basic/bin/basic"
+      - "./static:/opt/basic/static"
+      - "./oas.json:/opt/basic/oas.json"
+    environment:
+      - "DB_NAME=basic"
+      - "DB_USER=user"
+      - "DB_PASS=pass"
+      - "DB_ADDR=dev-db"
+    ports:
+      - 8080:8080
+    depends_on:
+      - swagger
+    entrypoint: /opt/basic/bin/basic
+
+  swagger:
+    image: swaggerapi/swagger-ui:v4.6.2
+    volumes:
+      - "./oas.json:/tmp/oas.json"
+    environment:
+      SWAGGER_JSON: '/tmp/oas.json'
+    # ports:
+    #   - 8100:8080
+
+  dev-db:
+    image: mariadb:10.5.6
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'basic'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'pass'
+    volumes:             
+      - ./cfg/init:/docker-entrypoint-initdb.d
+    ports:
+      - 3310:3306

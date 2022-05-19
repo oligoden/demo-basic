@@ -1,0 +1,377 @@
+<script type="text/javascript">
+    //-{{define "basic-list-js"}}
+    app.component('basic-list', {
+        template: '#basic-list',
+        delimiters: ['${', '}'],
+        data: function() { return {}},
+        methods:{},
+        computed: {
+            results: function () {return this.$store.state.basics},
+            amount: function () {return Object.keys(this.results).length},
+        }
+    })
+    //-{{end}}
+    var store = new Vuex.Store({
+        state: {
+            //-{{define "basic-list-store-state"}}
+            basics:{},
+            //-{{end}}
+        },
+        mutations: {
+            //-{{define "basic-list-store-mutations"}}
+            setBasics (state, data) {
+                state.basics = data;
+            },
+            //-{{end}}
+        },
+        actions: {
+            //-{{define "basic-list-store-actions"}}
+            readBasics (context, query) {
+                //-{{if eq .Environment "development"}}
+                //+let origin = "http://api."+window.location.host+"/basics";
+                //-{{else}}
+                let origin = "https://api."+window.location.host+"/basics";
+                //-{{end}}
+                fetch(origin,{
+                    method: 'GET',
+                    mode:'cors',
+                    credentials: 'include',
+                }).then(response => response.json())
+                .then(data => context.commit("setBasics", data))
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+            },
+            //-{{end}}
+        }
+    })
+</script>
+<!-- //-{{define "basic-list-html"}} -->
+<script id="basic-list" type="text/x-template">
+    <div class="basic-list">
+        <basic-list-item v-for="basic in results" :basic="basic"></basic-list-item>
+        <router-link to="/basics/add" class="add">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet">
+                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6 13h-5v5h-2v-5h-5v-2h5v-5h2v5h5v2z"/>
+            </svg>
+        </router-link>
+    </div>
+</script>
+<!-- //-{{end}} -->
+<style>
+    /* //-{{define "basic-list-css"}}//- */
+    .basic-list .add {
+        border-radius: 100%;
+        height: 3.052rem;
+        width: 3.052rem;
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+        fill: #238;
+        box-shadow: 1px 2px 3px 2px #00000055;
+    }
+
+    @media (min-width: 1281px) {}
+    @media (min-width: 1025px) and (max-width: 1280px) {}
+    @media (min-width: 768px) and (max-width: 1024px) {}
+    @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {}
+    @media (min-width: 481px) and (max-width: 767px) {}
+    @media (min-width: 320px) and (max-width: 480px) {}
+    /* //-{{end}} */
+</style>
+    
+    
+<script type="text/javascript">
+    //-{{define "basic-list-item-js"}}
+    app.component('basic-list-item', {
+        template: '#basic-list-item',
+        delimiters: ['${', '}'],
+        props: ["basic"],
+        data: function() { return {}},
+        methods:{
+            goToBasic: function(uc, event) {
+                this.$router.push("/basics/" + uc);
+            }
+        },
+        computed: {}
+    })
+    //-{{end}}
+    var store = new Vuex.Store({
+        state: {
+            //-{{define "basic-list-item-store-state"}}
+            //-{{end}}
+        },
+        mutations: {
+            //-{{define "basic-list-item-store-mutations"}}
+            //-{{end}}
+        },
+        actions: {
+            //-{{define "basic-list-item-store-actions"}}
+
+            //-{{end}}
+        }
+    })
+</script>
+<!-- //-{{define "basic-list-item-html"}} -->
+<script id="basic-list-item" type="text/x-template">
+    <div class="basic-list-item" @click="goToBasic(basic.uc)">
+        <p>${basic.name}</p>
+    </div>
+</script>
+<!-- //-{{end}} -->
+<style>
+    /* //-{{define "basic-list-item-css"}}//- */
+    .basic-list-item {
+        padding: 1rem;
+        border-radius: 0.41rem;
+        border: 2px solid #238b;
+        box-shadow: 1px 2px 3px 2px #00000055;
+        cursor: pointer;
+        margin-bottom: 1rem;
+    }
+
+    .basic-list-item p {
+        color: #000;
+        margin: 0;
+    }
+
+    @media (min-width: 1281px) {}
+    @media (min-width: 1025px) and (max-width: 1280px) {}
+    @media (min-width: 768px) and (max-width: 1024px) {}
+    @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {}
+    @media (min-width: 481px) and (max-width: 767px) {}
+    @media (min-width: 320px) and (max-width: 480px) {}
+    /* //-{{end}} */
+</style>
+
+
+<script type="text/javascript">
+    //-{{define "basic-item-js"}}
+    app.component('basic-item', {
+        template: '#basic-item',
+        delimiters: ['${', '}'],
+        props: [],
+        data: function() { return {
+            name: ""
+        }},
+        methods:{},
+        computed: {
+            uc() {
+                return this.$route.params.uc;
+            },
+            basic() {
+                let basics = this.$store.state.basics;
+                if (basics.hasOwnProperty(this.uc)) {
+                    return basics[this.uc]
+                }
+                return null
+            },
+        }
+    })
+    //-{{end}}
+    var store = new Vuex.Store({
+        state: {
+            //-{{define "basic-item-store-state"}}
+            //-{{end}}
+        },
+        mutations: {
+            //-{{define "basic-item-store-mutations"}}
+            setBasic (state, data) {
+                state.basics[data.uc] = data;
+            },
+            //-{{end}}
+        },
+        actions: {
+            //-{{define "basic-item-store-actions"}}
+            updateBasic (context, data) {
+                formBody = "uc="+encodeURIComponent(data.uc);
+                formBody += "&"+encodeURIComponent(data.field);
+                formBody += "="+encodeURIComponent(data.value);
+                
+                //-{{if eq .Environment "development"}}
+                //+let origin = "http://api."+window.location.host+"/basics";
+                //-{{else}}
+                let origin = "https://api."+window.location.host+"/basics";
+                //-{{end}}
+                fetch(origin,{
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: formBody,
+                    mode:'cors',
+                    credentials: 'include',
+                }).catch(error => {
+                    console.error('Fetch error:', error);
+                });
+            },
+            //-{{end}}
+        }
+    })
+</script>
+<!-- //-{{define "basic-item-html"}} -->
+<script id="basic-item" type="text/x-template">
+    <div class="basic-item">
+        <p v-if="!basic">loading</p>
+        <editable v-if="basic" v-model="basic.name" :uc="uc" field="name" :dispatch="'updateBasic'"></editable>
+        <router-link to="/basics" class="back">Back</router-link>
+    </div>
+</script>
+<!-- //-{{end}} -->
+<style>
+    /* //-{{define "basic-item-css"}}//- */
+    .basic-item .back {
+        border-radius: 0.41rem;
+        padding: 1.25rem 0.8rem;
+        position: absolute;
+        left: 1rem;
+        bottom: 1rem;
+        border: 2px solid #238b;
+        box-shadow: 1px 2px 3px 2px #00000055;
+        font-weight: bold;
+    }
+
+    @media (min-width: 1281px) {}
+    @media (min-width: 1025px) and (max-width: 1280px) {}
+    @media (min-width: 768px) and (max-width: 1024px) {}
+    @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {}
+    @media (min-width: 481px) and (max-width: 767px) {}
+    @media (min-width: 320px) and (max-width: 480px) {}
+    /* //-{{end}} */
+</style>
+
+
+<script type="text/javascript">
+    //-{{define "basic-make-js"}}
+    app.component('basic-make', {
+        template: '#basic-make',
+        delimiters: ['${', '}'],
+        props: [],
+        data: function() { return {
+            name: ""
+        }},
+        methods:{
+            createBasic: function(event) {
+            this.$store.dispatch("createBasic", {
+                name: this.name,
+            });
+            this.name = "";
+            router.push('/basics')
+        }
+        },
+        computed:{}
+    })
+    //-{{end}}
+    var store = new Vuex.Store({
+        state: {
+            //-{{define "basic-make-store-state"}}
+            //-{{end}}
+        },
+        mutations: {
+            //-{{define "basic-make-store-mutations"}}
+            setBasic (state, data) {
+                state.basics[data.uc] = data;
+            },
+            //-{{end}}
+        },
+        actions: {
+            //-{{define "basic-make-store-actions"}}
+            createBasic (context, data) {
+                let formBody = [];
+                for (let property in data) {
+                    let encodedKey = encodeURIComponent(property);
+                    let encodedValue = encodeURIComponent(data[property]);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
+                
+                //-{{if eq .Environment "development"}}
+                //+let origin = "http://api."+window.location.host+"/basics";
+                //-{{else}}
+                let origin = "https://api."+window.location.host+"/basics";
+                //-{{end}}
+                fetch(origin,{
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: formBody,
+                    mode:'cors',
+                    credentials: 'include',
+                }).then(response => response.json())
+                .then(data => context.commit("setBasic", data))
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+            },
+            //-{{end}}
+        }
+    })
+</script>
+<!-- //-{{define "basic-make-html"}} -->
+<script id="basic-make" type="text/x-template">
+    <div class="basic-make">
+        <fill-in v-model="name" placeholder="Name"></fill-in>
+        <div class="buttons">
+            <router-link to="/basics">Back</router-link>
+            <input type="button" value="Add" v-on:click="createBasic">
+        </div>
+    </div>
+</script>
+<!-- //-{{end}} -->
+<style>
+    /* //-{{define "basic-make-css"}}//- */
+    .basic-make .buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .basic-make .buttons * {
+        border-radius: 0.41rem;
+        border: 2px solid #238b;
+        box-shadow: 1px 2px 3px 2px #00000055;
+        padding: 0.8rem 1.25rem;
+        font-weight: bold;
+    }
+
+    @media (min-width: 1281px) {}
+    @media (min-width: 1025px) and (max-width: 1280px) {}
+    @media (min-width: 768px) and (max-width: 1024px) {}
+    @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {}
+    @media (min-width: 481px) and (max-width: 767px) {}
+    @media (min-width: 320px) and (max-width: 480px) {}
+    /* //-{{end}} */
+</style>
+    
+<!-- //-{{define "basic-js"}}
+//-{{template "basic-list-js"}}
+//-{{template "basic-list-item-js"}}
+//-{{template "basic-item-js"}}
+//-{{template "basic-make-js"}}
+//-{{end}}
+//-{{define "basic-store-state"}}
+//-{{template "basic-list-store-state"}}
+//-{{template "basic-list-item-store-state"}}
+//-{{template "basic-item-store-state"}}
+//-{{template "basic-make-store-state"}}
+//-{{end}}
+//-{{define "basic-store-mutations"}}
+//-{{template "basic-list-store-mutations"}}
+//-{{template "basic-list-item-store-mutations"}}
+//-{{template "basic-item-store-mutations"}}
+//-{{template "basic-make-store-mutations"}}
+//-{{end}}
+//-{{define "basic-store-actions"}}
+//-{{template "basic-list-store-actions" . }}
+//-{{template "basic-list-item-store-actions" . }}
+//-{{template "basic-item-store-actions" . }}
+//-{{template "basic-make-store-actions" . }}
+//-{{end}}
+//-{{define "basic-html"}}
+//-{{template "basic-list-html"}}
+//-{{template "basic-list-item-html"}}
+//-{{template "basic-item-html"}}
+//-{{template "basic-make-html"}}
+//-{{end}}
+//-{{define "basic-css"}}
+//-{{template "basic-list-css"}}
+//-{{template "basic-list-item-css"}}
+//-{{template "basic-item-css"}}
+//-{{template "basic-make-css"}}
+//-{{end}} -->

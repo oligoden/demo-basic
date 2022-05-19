@@ -1,0 +1,98 @@
+<script type="text/javascript">
+//-{{define "fill-in-js"}}
+app.component('fill-in', {
+    template: '#fill-in',
+    delimiters: ['${', '}'],
+    props: ['placeholder', 'type', 'optional', 'modelValue', 'err'],
+    emits: ['update:modelValue'],
+	data: function() { 
+        return {}
+    },
+    computed: {
+        inputtype() {
+            return this.type === 'text' || this.type === '' ? this.type : 'text';
+        },
+        switchOptional() {
+            return this.optional === 'true';
+        },
+        hasError() {
+            return this.err != '';
+        }
+    },
+    methods: {
+        passwordToggle: function(event) {
+        }
+    }
+})
+//-{{end}}
+</script>
+<!-- //-{{define "fill-in-html"}} -->
+<script id="fill-in" type="text/x-template">
+    <div class="fill-in">
+        <div class="inputs">
+            <input :placeholder="placeholder" :type="inputtype" :value="modelValue" v-on:input="$emit('update:modelValue', $event.target.value)"/>
+            <p class="error" v-if="hasError">${err}</p>
+            <p v-show="switchOptional">(optional)</p>
+        </div>
+    </div>
+</script>
+<!-- //-{{end}} -->
+<style>
+    /* //-{{define "fill-in-css"}}//- */
+    .fill-in {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 0.41rem;
+        box-shadow: 1px 2px 3px 2px #00000055;
+        margin-bottom: 1rem;
+    }
+
+    .fill-in .inputs{
+        display: flex;
+        margin-left: auto;
+        align-items: center;
+        justify-content: space-between;
+        width:100%;
+        border-radius: 0.41rem;
+    }
+    
+    .fill-in .inputs input{
+        width:100%;
+        padding: 1rem;
+        border-radius: 0.41rem;
+        border: 2px solid #238b;
+    }
+
+    .fill-in .black {
+        color: black;
+    }
+
+    .fill-in span {
+        color: gray;
+    }
+
+    .fill-in svg {
+        height: 1rem;
+        cursor: pointer;
+        margin-left: 0.512rem;
+        fill: #636363;
+    }
+
+    .fill-in .inputs > div {
+        height: 1rem;
+    }
+
+    .fill-in > input {
+        width:100%;
+        height: 100%;
+    }
+
+    .fill-in p.error {
+        font-size: 0.8rem;
+        color: red;
+        white-space: nowrap;
+        align-self: flex-end;
+    }
+    /* //-{{end}} */
+</style>

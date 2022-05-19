@@ -1,0 +1,98 @@
+{
+    "name":"basic",
+    "controls":{
+        "mappings":[
+            {"start":"*.go","end":"exec:compile-basic"},
+            {"start":"exec:compile-basic","end":"exec:compile-graph"},
+            {"start":"file:cmd/dev/index.*","end":"exec:compile-graph"}
+        ]
+    },
+    "directories": {
+        ".demo-basic": {
+            "src-ovr": "../",
+            "controls":{
+                "behaviour":{"options":"output","filters":{"comment":{}}},
+                "mappings":[
+                    {"start":"file:device.go","end":"file:cmd/main.go"},
+                    {"start":"file:record.go","end":"file:cmd/main.go"},
+                    {"start":"file:mux.go","end":"file:cmd/main.go"}
+                ]
+            },
+            "directories": {
+                "cmd": {
+                    "controls":{"behaviour":{"filters":{"comment":{}}}},
+                    "files": {
+                        "main.go": {}
+                    }
+                }
+            },
+            "files":{
+                "device.go":{},
+                "record.go":{},
+                "mux.go":{}
+            }
+        },
+        "static": {
+            "src-ovr": "/",
+            "controls":{
+                "behaviour":{"options":"output"},
+                "mappings":[
+                    {"start": "file:index.html", "end": "file:cmd/dev/cmp.html"},
+                    {"start": "file:cmd/dev/ui/index.html", "end": "file:cmd/dev/cmp.html"},
+                    {"start":"file:cmd/dev/cmp.html","end":"file:cmd/dev/index.html"},
+                    {"start":"file:cmd/dev/cmp.html","end":"file:cmd/dev/index.js"},
+                    {"start":"file:cmd/dev/cmp.html","end":"file:cmd/dev/index.css"}
+                ]
+            },
+            "directories": {
+                "dev":{
+                    "src-ovr": "/cmd/dev",
+                    "dst-ovr": "../",
+                    "controls":{"behaviour":{"filters":{"comment":{}}}},
+                    "files": {
+                        "index.html":{},
+                        "index.js":{},
+                        "index.css":{},
+                        "cmp.html":{}
+                    },
+                    "directories": {
+                        "ui": {
+                            "controls":{
+                                "behaviour":{"options":"-output","filters":{"comment":{}}},
+                                "mappings":[
+                                    {"start": "file:cmd/dev/ui/fill-in.html", "end": "file:cmd/dev/ui/index.html"},
+                                    {"start": "file:cmd/dev/ui/editable.html", "end": "file:cmd/dev/ui/index.html"},
+                                    {"start": "file:cmd/dev/ui/icons.html", "end": "file:cmd/dev/ui/index.html"}
+                                ]
+                            },
+                            "files": {
+                                "index.html":{},
+                                "icons.html":{},
+                                "editable.html":{},
+                                "fill-in.html":{}
+                            }
+                        }
+                    }
+                },
+                "basic":{
+                    "src-ovr": "../",
+                    "controls":{"behaviour": {"options":"-output","filters":{"comment":{}}}},
+                    "files": {
+                        "index.html":{}
+                    }
+                }
+            }
+        }
+    },
+    "execs": {
+        "compile-graph": {
+            "cmd": ["dot", "-Tpng", "output.gv", "-o", "output.png"],
+            "timeout": 1000
+        },
+        "compile-basic": {
+            "cmd": ["go", "build", "-o", "bin/basic", "github.com/oligoden/demo-basic/.demo-basic/cmd"],
+            "timeout": 100000,
+            "env": {"GOOS":"linux"}
+        }
+    }
+}

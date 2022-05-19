@@ -1,0 +1,84 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Basic Demo",
+        "description": "The API for the Oligoden Basic demo service.",
+        "termsOfService": "https://oligoden.com/terms/",
+        "contact": {
+            "name": "Oligoden",
+            "url": "https://www.oligoden.com",
+            "email": "demo-basic-api@oligoden.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "0.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://api.test.com:8080/",
+            "description": "development"
+        }
+    ],
+    "paths": {
+        "/basics": {
+            "post": {
+                "description": "Creates a basic record",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": { 
+                                        "description": "Name",
+                                        "type": "string",
+                                        "default": "Tree"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {          
+                        "description": "Basic created"
+                    }
+                }
+            },
+            "get": {
+                "description": "Reads a basic record",
+                "responses": {
+                    "200": {          
+                        "description": "Basic read"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a basic record",
+                "requestBody": {
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": { 
+                                        "description": "Name",
+                                        "type": "string",
+                                        "default": "Fish"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {          
+                        "description": "Basic update"
+                    }
+                }
+            }
+        }
+    }
+}

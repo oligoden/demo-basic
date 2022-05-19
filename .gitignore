@@ -1,15 +1,10 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+.basic
+bin
 
-# Test binary, built with `go test -c`
-*.test
+static
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+meta.override.json
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+output.gv
+output.pdf
+output.png
