@@ -15,11 +15,11 @@ import (
 func setUser(user, session string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("X_user") == "" {
-			r.Header.Add("X_user", "1")
+			r.Header.Add("X_user", user)
 		}
 
 		if r.Header.Get("X_session") == "" {
-			r.Header.Add("X_session", "1")
+			r.Header.Add("X_session", session)
 		}
 	})
 }
@@ -82,7 +82,6 @@ func MuxFunc() func(*adapter.Mux) {
 			MethodNotAllowed().
 			Put(d.Update()).
 			Get(d.Read()).
-			Post(d.Create()).
 			//-{{if eq .Environment "development"}}
 			//+Options("PUT").
 			//+CORS().

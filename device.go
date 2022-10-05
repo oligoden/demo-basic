@@ -1,15 +1,10 @@
 package demobasic
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
-	"regexp"
 
 	"github.com/oligoden/chassis/device"
 	"github.com/oligoden/chassis/device/model"
-	"github.com/oligoden/chassis/device/model/data"
 	"github.com/oligoden/chassis/device/view"
 	"github.com/oligoden/chassis/storage/gosql"
 )
@@ -26,33 +21,6 @@ func NewDevice(s model.Connector) *Device {
 	return d
 }
 
-func (d Device) Read() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		m := d.NewModel(r)
-		v := d.NewView(w)
-
-		rgx, _ := regexp.Compile("^/basics(/?|/([a-zA-Z0-9]+))$")
-		matches := rgx.FindStringSubmatch(r.URL.Path)
-
-		if len(matches) == 0 {
-			v.Error(m)
-			return
-		}
-
-		if matches[2] != "" {
-			m.ReadUC(matches[2])
-			v.JSON(m)
-			return
-		}
-
-		e := NewList()
-		m.Data(e)
-		m.Read()
-
-		v.JSON(m)
-	})
-}
-
 type Model struct {
 	model.Default
 }
@@ -63,9 +31,17 @@ func (d *Device) NewModel(r *http.Request) *Model {
 	m.Request = r
 	m.Store = d.Store
 	m.BindUser()
-	m.NewData = func() data.Operator { return NewRecord() }
 	m.Data(NewRecord())
 	return m
+}
+
+func (m *Model) NewData(t ...string) {
+	if m.Err() != nil {
+		return
+	}
+
+	e := NewList()
+	m.Data(e)
 }
 
 func (m *Model) ReadUC(uc string) {
@@ -103,27 +79,4 @@ func NewView(w http.ResponseWriter) *View {
 	v.Default = view.Default{}
 	v.Response = w
 	return v
-}
-
-func (v View) JSON(m model.Operator) {
-	if m.Err() != nil {
-		v.Error(m)
-		return
-	}
-
-	out, err := json.Marshal(m.Data())
-	if err != nil {
-		log.Println(err)
-		http.Error(v.Response, "an error occured", http.StatusInternalServerError)
-		return
-	}
-
-	v.Response.Header().Set("Content-Type", "application/json")
-	n, err := v.Response.Write(out)
-	if err != nil {
-		log.Println("an error occured writing to response", err)
-		http.Error(v.Response, "an error occured", http.StatusInternalServerError)
-		return
-	}
-	fmt.Printf("\n--< written %d bytes\n--< %s\n", n, string(out))
 }

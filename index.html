@@ -184,14 +184,14 @@
         actions: {
             //-{{define "basic-item-store-actions"}}
             updateBasic (context, data) {
-                formBody = "uc="+encodeURIComponent(data.uc);
-                formBody += "&"+encodeURIComponent(data.field);
+                // formBody = "uc="+encodeURIComponent(data.uc);
+                formBody = encodeURIComponent(data.field);
                 formBody += "="+encodeURIComponent(data.value);
                 
                 //-{{if eq .Environment "development"}}
-                //+let origin = "http://api."+window.location.host+"/basics";
+                //+let origin = "http://api."+window.location.host+"/basics/"+data.uc;
                 //-{{else}}
-                let origin = "https://api."+window.location.host+"/basics";
+                let origin = "https://api."+window.location.host+"/basics/"+data.uc;
                 //-{{end}}
                 fetch(origin,{
                     method: 'PUT',

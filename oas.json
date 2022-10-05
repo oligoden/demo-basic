@@ -54,7 +54,19 @@
                         "description": "Basic read"
                     }
                 }
-            },
+            }
+        },
+        "/basics/{UC}":{
+            "parameters": [
+                {
+                    "name": "UC",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "default": "xy",
+                    "description": "Basic unique code"
+                }
+            ],
             "put": {
                 "description": "Update a basic record",
                 "requestBody": {

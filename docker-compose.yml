@@ -26,8 +26,6 @@ services:
       - "./oas.json:/tmp/oas.json"
     environment:
       SWAGGER_JSON: '/tmp/oas.json'
-    # ports:
-    #   - 8100:8080
 
   dev-db:
     image: mariadb:10.5.6

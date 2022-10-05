@@ -56,6 +56,21 @@ Run with docker-compose.
 
 Go to `test.com:8080`
 
+### Testing the API
+
+Go to `api.test.com:8080` to see the OpenAPI client. Here you can test:
+
+- creating a record (POST /basics)
+- viewing records (GET /basics)
+- updating a record (PUT /basics/UC)
+
+When testing the PUT /basics/UC end-point remember to replace the default UC value (xy)
+in the textbox with a UC value returned by the POST or GET end-points.
+
+Refer to the `oas.json` file for the OAS discription of the API.
+
+### Viewing the development DB
+
 To connect to the DB point your client to:
 ```
 localhost:3310
